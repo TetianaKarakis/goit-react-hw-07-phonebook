@@ -1,37 +1,53 @@
-import axios from "axios";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-axios.defaults.baseURL = "https://654a2d49e182221f8d52aa2e.mockapi.io/api/v1";
+// Встановлення базового URL для axios
+axios.defaults.baseURL = "https://654a2d49e182221f8d52aa2e.mockapi.io";
 
+// Створення асинхронної Thunk-дії fetchContacts
 export const fetchContacts = createAsyncThunk(
-	"contacts/fetchAll",
-	async (_, thunkAPI) => {
-	try {
-		const response = await axios.get("/contacts")
-		return response.data;
-	} catch (error) {
-		return thunkAPI.rejectWithValue(error);
-	}
-});
+  'contacts/fetchAll', // Унікальний рядок, що ідентифікує цю дію
+  async (_, thunkAPI) => {
+    try {
+      // Надсилання GET-запиту на '/contacts'
+      const response = await axios.get('/contacts');
+      // Повернення отриманих даних
+      return response.data;
+    } catch (error) {
+      // У разі помилки, відхилення дії із зазначенням помилки
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
-export const addContact = createAsyncThunk(
-	"contacts/addContact",
-	async (contact, thunkAPI) => {
-		try {
-			const response = await axios.post("/contacts", contact);
-			return response.data;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error);
-		}
-});
+// Створення асинхронної Thunk-дії addContacts
+export const addContacts = createAsyncThunk(
+  'contacts/addContacts', // Унікальний рядок, що ідентифікує цю дію
+  async ({ name, number }, thunkAPI) => {
+    try {
+      // Надсилання POST-запиту на '/contacts' з даними { name, number }
+      const response = await axios.post('/contacts', { name, number });
+      // Повернення отриманих даних
+      return response.data;
+    } catch (error) {
+      // У разі помилки, відхилення дії із зазначенням помилки
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
-export const removeContact = createAsyncThunk(
-	"contacts/removeContact",
-	async (contactId, thunkAPI) => {
-		try {
-			const response = await axios.delete(`/contacts/${contactId}`);
-			return response.data;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error);
-		}
-});
+// Создание асинхронного Thunk-действия deleteContacts
+export const deleteContacts = createAsyncThunk(
+  'contacts/deleteContacts', // Унікальний рядок, що ідентифікує цю дію
+  async (contactId, thunkAPI) => {
+    try {
+      // Надсилання DELETE-запиту на `/contacts/${contactId}`
+      const response = await axios.delete(`/contacts/${contactId}`);
+      // Повернення отриманих даних
+      return response.data;
+    } catch (error) {
+      // У разі помилки, відхилення дії із зазначенням помилки
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);

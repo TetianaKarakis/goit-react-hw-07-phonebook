@@ -1,39 +1,34 @@
-import css from "./ContactList.module.css";
-import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
-import { removeContact } from "redux/operations";
+import React from 'react';
+import { List, Item, Button } from './ContactList.styled';
 
-export const ContactList = ({ filteredContacts }) => {
-	const dispatch = useDispatch();
+import { useSelector, useDispatch } from 'react-redux';
+import { selectVisibleContacts } from 'redux/selectors';
+import { deleteContacts } from '../../redux/operations';
 
-	return (
-		<>
-			{
-				filteredContacts.length === 0
-				? <p className={css.contact__text}>Contact not found</p>
-				: <ul className={css.contacts__list}>
-					{filteredContacts.map(({ name, id, number }) =>
-						<li className={css.contact__item} key={id}>
-							<span className={css.contact__text}>{name}: {number}</span>
-							<button
-								id={id}
-								onClick={() => dispatch(removeContact(id))}
-								className={css.contact__button}
-								type="button">
-								Delete
-							</button>
-						</li>
-					)}
-					</ul>
-			}
-		</>
-	)
-}
+// Компонент списку контактів
+const ContactList = () => {
+  const contacts = useSelector(selectVisibleContacts);
+  const dispatch = useDispatch();
+  return (
+    <List>
+      {contacts.map(contact => (
+        <Item key={contact.id}>
+          {contact.name + ' : ' + contact.number}
+          {
+            // Кнопка видалення контакту
+            <Button
+              type="button"
+              name="delete"
+              onClick={() => dispatch(deleteContacts(contact.id))}
+            >
+             
+              delete
+            </Button>
+          }
+        </Item>
+      ))}
+    </List>
+  );
+};
 
-ContactList.propTypes = {
-	filteredContacts: PropTypes.arrayOf(PropTypes.exact({
-		name: PropTypes.string.isRequired,
-		number: PropTypes.string.isRequired,
-		id: PropTypes.string.isRequired
-	}))
-}
+export default ContactList;
